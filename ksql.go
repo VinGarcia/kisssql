@@ -26,7 +26,7 @@ func init() {
 // the KissSQL interface `ksql.Provider`.
 type DB struct {
 	driver  string
-	dialect dialect
+	dialect Dialect
 	db      DBAdapter
 }
 
@@ -632,7 +632,7 @@ func (c DB) Update(
 }
 
 func buildInsertQuery(
-	dialect dialect,
+	dialect Dialect,
 	tableName string,
 	record interface{},
 	idNames ...string,
@@ -736,7 +736,7 @@ func buildInsertQuery(
 }
 
 func buildUpdateQuery(
-	dialect dialect,
+	dialect Dialect,
 	tableName string,
 	record interface{},
 	idFieldNames ...string,
@@ -857,7 +857,7 @@ func (nopScanner) Scan(value interface{}) error {
 	return nil
 }
 
-func scanRows(dialect dialect, rows Rows, record interface{}) error {
+func scanRows(dialect Dialect, rows Rows, record interface{}) error {
 	v := reflect.ValueOf(record)
 	t := v.Type()
 	if t.Kind() != reflect.Ptr {
@@ -892,7 +892,7 @@ func scanRows(dialect dialect, rows Rows, record interface{}) error {
 	return rows.Scan(scanArgs...)
 }
 
-func getScanArgsForNestedStructs(dialect dialect, rows Rows, t reflect.Type, v reflect.Value, info kstructs.StructInfo) []interface{} {
+func getScanArgsForNestedStructs(dialect Dialect, rows Rows, t reflect.Type, v reflect.Value, info kstructs.StructInfo) []interface{} {
 	scanArgs := []interface{}{}
 	for i := 0; i < v.NumField(); i++ {
 		// TODO(vingarcia00): Handle case where type is pointer
@@ -919,7 +919,7 @@ func getScanArgsForNestedStructs(dialect dialect, rows Rows, t reflect.Type, v r
 	return scanArgs
 }
 
-func getScanArgsFromNames(dialect dialect, names []string, v reflect.Value, info kstructs.StructInfo) []interface{} {
+func getScanArgsFromNames(dialect Dialect, names []string, v reflect.Value, info kstructs.StructInfo) []interface{} {
 	scanArgs := []interface{}{}
 	for _, name := range names {
 		fieldInfo := info.ByName(name)
@@ -942,7 +942,7 @@ func getScanArgsFromNames(dialect dialect, names []string, v reflect.Value, info
 }
 
 func buildSingleKeyDeleteQuery(
-	dialect dialect,
+	dialect Dialect,
 	table string,
 	idName string,
 	idMaps []map[string]interface{},
@@ -962,7 +962,7 @@ func buildSingleKeyDeleteQuery(
 }
 
 func buildCompositeKeyDeleteQuery(
-	dialect dialect,
+	dialect Dialect,
 	table string,
 	idNames []string,
 	idMaps []map[string]interface{},
@@ -1007,7 +1007,7 @@ func getFirstToken(s string) string {
 }
 
 func buildSelectQuery(
-	dialect dialect,
+	dialect Dialect,
 	structType reflect.Type,
 	info kstructs.StructInfo,
 	selectQueryCache map[reflect.Type]string,
@@ -1030,7 +1030,7 @@ func buildSelectQuery(
 }
 
 func buildSelectQueryForPlainStructs(
-	dialect dialect,
+	dialect Dialect,
 	structType reflect.Type,
 	info kstructs.StructInfo,
 ) string {
@@ -1043,7 +1043,7 @@ func buildSelectQueryForPlainStructs(
 }
 
 func buildSelectQueryForNestedStructs(
-	dialect dialect,
+	dialect Dialect,
 	structType reflect.Type,
 	info kstructs.StructInfo,
 ) (string, error) {

@@ -69,7 +69,7 @@ func NewTable(tableName string, ids ...string) Table {
 	}
 }
 
-func (t Table) insertMethodFor(dialect dialect) insertMethod {
+func (t Table) insertMethodFor(dialect Dialect) insertMethod {
 	if len(t.idColumns) == 1 {
 		return dialect.InsertMethod()
 	}

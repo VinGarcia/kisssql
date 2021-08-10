@@ -2022,7 +2022,7 @@ func shiftErrSlice(errs *[]error) error {
 	return err
 }
 
-func getUsersByID(db DBAdapter, dialect dialect, resultsPtr *[]User, ids ...uint) error {
+func getUsersByID(db DBAdapter, dialect Dialect, resultsPtr *[]User, ids ...uint) error {
 	placeholders := make([]string, len(ids))
 	params := make([]interface{}, len(ids))
 	for i := range ids {
@@ -2063,7 +2063,7 @@ func getUsersByID(db DBAdapter, dialect dialect, resultsPtr *[]User, ids ...uint
 	return nil
 }
 
-func getUserByID(db DBAdapter, dialect dialect, result *User, id uint) error {
+func getUserByID(db DBAdapter, dialect Dialect, result *User, id uint) error {
 	rows, err := db.QueryContext(context.TODO(), `SELECT id, name, age, address FROM users WHERE id=`+dialect.Placeholder(0), id)
 	if err != nil {
 		return err

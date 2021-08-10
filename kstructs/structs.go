@@ -51,6 +51,11 @@ func (s StructInfo) add(field FieldInfo) {
 	s.byName[field.Name] = &field
 }
 
+// NumFields ...
+func (s StructInfo) NumFields() int {
+	return len(s.byIndex)
+}
+
 // This cache is kept as a pkg variable
 // because the total number of types on a program
 // should be finite. So keeping a single cache here
